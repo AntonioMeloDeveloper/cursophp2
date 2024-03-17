@@ -8,20 +8,27 @@
 </head>
 <body>
     <main>
+        <style>
+            .error {
+            color: red; 
+            font-weight: bold; 
+            margin-bottom: 10px; 
+            }
+        </style>
 
         <h1>Formulário 02</h1>
         <form action="" method="post">
              <label for="nome">Nome</label>
-             <input required type="text" name="nome" id="01">
+             <input type="text" name="nome" id="01">
 
              <label for="email">E-mail</label>
-             <input required type="email" name="email" id="02">
+             <input type="text" name="email" id="02">
 
              <label for="website">Website</label>
-             <input required type="url" name="website" id="03">
+             <input type="text" name="website" id="03">
 
              <label for="comentario">Comentário</label>
-             <textarea required name="comentario" id="04" cols="30" rows="3"></textarea>
+             <textarea name="comentario" id="04" cols="30" rows="3"></textarea>
 
              <label for="genero">Gênero:</label>
              <input type="radio" name="genero" value="masculino">Masculino
@@ -29,15 +36,35 @@
              <input type="radio" name="genero" value="outro">Outro
 
              <button name="enviado" type="submit">Enviar</button>
+             
         </form>
         <div>
             <?php 
                 if(isset($_POST['enviado'])){
 
-                    $genero = "Não selecionado";
+               
+                    if (empty($_POST['nome'])){
+                        echo '<p class="error">Preencha o campo nome</p>';
+                        die();
+                    }
 
+                    if (empty($_POST['email']) || !filter_var($_POST['email'],FILTER_VALIDATE_EMAIL) ){
+                        echo '<p class="error">Preencha o campo E-mail!</p>';
+                        die();
+                    }
+
+                    if (!empty($_POST['website']) && !filter_var($_POST['website'],FILTER_VALIDATE_URL) ){
+                        echo '<p class="error">Preencha corretamente o campo Website!</p>';
+                        die();
+                    }
+
+                    $genero = "Não selecionado";
                     if(isset($_POST['genero'])){
                         $genero = $_POST['genero'];
+                        if ($genero != "masculino" && $genero != "feminino" && $genero != "outro"){
+                            echo '<p class="error">Preencha corretamente o Gênero!</p>';
+                            die();
+                        }    
                     }
 
                     echo "<p>Nome:" . $_POST['nome'] . "</p>";
